@@ -1,6 +1,6 @@
 <script src="simpleTest.js"></script>
 <script>
-function toFixed(number, precision) { // *If a parameter is not provided, you can specify the default value to be used like so.
+function toFixed(number, precision=0) { // *If a parameter is not provided, you can specify the default value to be used like so.
 	var numAsString = "" + number;
 	var decimalPosition = numAsString.indexOf(".");
 	var numberAsArray = [];
@@ -15,7 +15,7 @@ function toFixed(number, precision) { // *If a parameter is not provided, you ca
 		numberAsArray.push(numAsString[i]);
 	}
 
-	if (decimalPosition !== -1 && precision) {
+	if (decimalPosition !== -1) {
 		numberAsArray.splice(decimalPosition + precision + 1, 0, ".");
 		numberAsArray.splice(decimalPosition, 1);
 		var newValueAsNumber = Number(numberAsArray.join(""));
@@ -29,17 +29,15 @@ function toFixed(number, precision) { // *If a parameter is not provided, you ca
 
 		return Number(roundedValue.reverse().join("")) + "";
 	} else {
-		if (precision) {
+		if (precision !== 0) {
 			numberAsArray.push(".");
 
 			for (var i = 0; i < precision; i++) {
 				numberAsArray.push("0");
 			}
-
-			return numberAsArray.join("");
 		}
 
-		return Math.round(numberAsArray.join("")) + "";
+		return numberAsArray.join("");
 	}
 }
 
@@ -89,7 +87,7 @@ tests({
 		var result3 = toFixed({});
 		eq("0", result3);
 	},
-	"If a negative number is passed, it should perform all the calculations on that negative number and return the correspionding string.": function() {
+	"If a negative number is passed, it should perform all the calculations on that negative number and return the corresponding string.": function() {
 		//fail();
 		var result1 = toFixed(-500.00, 5);
 		eq("-500.00000", result1);
