@@ -1,0 +1,120 @@
+<script src="simpleTest.js"></script>
+<script>
+function toFixed(number, precision) { // *If a parameter is not provided, you can specify the default value to be used like so.
+	var numAsString = "" + number;
+	var decimalPosition = numAsString.indexOf(".");
+	var numberAsArray = [];
+
+	if (Array.isArray(number)) {
+		return NaN;
+	} else if (typeof number !== "number") {
+		return "0";
+	}
+
+	for (var i = 0; i < numAsString.length; i++) {
+		numberAsArray.push(numAsString[i]);
+	}
+
+	if (decimalPosition !== -1 && precision) {
+		numberAsArray.splice(decimalPosition + precision + 1, 0, ".");
+		numberAsArray.splice(decimalPosition, 1);
+		var newValueAsNumber = Number(numberAsArray.join(""));
+		var roundedValue = Math.round(newValueAsNumber) + "";
+		roundedValue = roundedValue.split("");
+		roundedValue.reverse().forEach(function(currentValue, index, array) {
+			if (index + 1 === precision) {
+				array.splice(precision, 0, ".");
+			}
+		});
+
+		return Number(roundedValue.reverse().join("")) + "";
+	} else {
+		if (precision) {
+			numberAsArray.push(".");
+
+			for (var i = 0; i < precision; i++) {
+				numberAsArray.push("0");
+			}
+
+			return numberAsArray.join("");
+		}
+
+		return Math.round(numberAsArray.join("")) + "";
+	}
+}
+
+tests({
+	'It should return a string representing a number.': function() {
+		//fail();
+		var result = toFixed(1.15, 2);
+		eq("string", typeof result);
+	},
+	'If a float is passed, it should return a float rounded to the specified number of decimal places': function() {
+		//fail();
+		var result1 = toFixed(0.615, 1);
+		eq("0.6", result1);
+
+		var result2 = toFixed(17.988, 2);
+		eq("17.99", result2);
+
+		var result3 = toFixed(1.0015, 3);
+		eq("1.002", result3);
+	},
+	'If an integer is passed, it should return a float with zeros in the specified decimal places.': function() {
+		//fail();
+		var result = toFixed(100, 3);
+		eq("100.000", result);
+	},
+	'If the first argument is a number and precision is not defined, it should return a string representing a rounded whole number.': function() {
+		//fail();
+		var result = toFixed(0.615);
+		eq("1", result);
+	},
+	'If an array is passed, it should return NaN.': function() {
+		//fail();
+		var result1 = toFixed([1, 2, 3]);
+		eq(String(NaN), String(result1));
+
+		var result2 = toFixed([1, 2, 3], 2);
+		eq(String(NaN), String(result2));
+	},
+	'If something other than an array or number is passed, it should return \"0\".': function() {
+		//fail();
+		var result1 = toFixed('string');
+		eq("0", result1);
+
+		var result2 = toFixed(function() {});
+		eq("0", result2);
+
+		var result3 = toFixed({});
+		eq("0", result3);
+	},
+	"If a negative number is passed, it should perform all the calculations on that negative number and return the correspionding string.": function() {
+		//fail();
+		var result1 = toFixed(-500.00, 5);
+		eq("-500.00000", result1);
+
+		var result2 = toFixed(-0.615, 2);
+		eq("-0.61", result2);
+
+		debugger;
+		var result3 = toFixed(-500.00);
+		eq("-500", result3);
+	},
+	'EDGE CASE: passing \'0.615, 2\' should return 0.62': function() {
+		//fail();
+		var result = toFixed(0.615, 2);
+		eq("0.62", result);
+	},
+	'EDGE CASE: passing \'10.235, 2\' should return 10.24': function() {
+		//fail();
+		var result = toFixed(10.235, 2);
+		eq("10.24", result);
+	},
+	'EDGE CASE: passing \'1.005, 2\' should return 1.01': function() {
+		//fail();
+		var result = toFixed(1.005, 2);
+		eq("1.01", result);
+	},
+});
+</script>
